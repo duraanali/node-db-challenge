@@ -8,42 +8,52 @@ const server = express();
 server.use(helmet());
 server.use(express.json());
 
-server.get('/api/species', (req, res) => {
-    // get all species from the database
-    db('species')
-        .then(species => {
-            res.status(200).json(species);
+
+server.get('/api/projects', (req, res) => {
+    // get all projects from the database
+    db('projects')
+        .then(projects => {
+            res.status(200).json(projects);
         })
         .catch(error => {
             res.status(500).json(error);
         });
 });
 
-server.get('/api/animals', (req, res) => {
-    // get all animals from the database
-    // include species name
-    db('animals as a')
-        .leftJoin('species as s', 's.id', 'a.species_id')
-        .select('a.id', 'a.animal_name', 's.species_name')
-        .then(animals => {
-            res.status(200).json(animals);
+server.get('/api/resources', (req, res) => {
+    // get all resources from the database
+    db('resources')
+        .then(resources => {
+            res.status(200).json(resources);
         })
         .catch(error => {
             res.status(500).json(error);
         });
 });
 
-// create animal
-server.post('/api/animals', (req, res) => {
-    db('animals').insert(req.body)
+server.get('/api/tasks', (req, res) => {
+    // get all projects from the database
+    db('tasks')
+        .then(tasks => {
+            res.status(200).json(tasks);
+        })
+        .catch(error => {
+            res.status(500).json(error);
+        });
+});
+
+
+// create resources
+server.post('/api/resources', (req, res) => {
+    db('resources').insert(req.body)
         .then(ids => {
             const id = ids[0];
 
-            db('animals')
+            db('resources')
                 .where({ id })
                 .first()
-                .then(animal => {
-                    res.status(201).json(animal);
+                .then(resource => {
+                    res.status(201).json(resource);
                 });
         })
         .catch(error => {
@@ -51,21 +61,44 @@ server.post('/api/animals', (req, res) => {
         });
 });
 
-// remove species
-server.delete('/api/species/:id', (req, res) => {
-    db('species')
-        .where({ id: req.params.id })
-        .del()
-        .then(count => {
-            if (count > 0) {
-                res.status(204).end();
-            } else {
-                res.status(404).json({ message: 'Record not found' });
-            }
+
+// create projects
+server.post('/api/projects', (req, res) => {
+    db('projects').insert(req.body)
+        .then(ids => {
+            const id = ids[0];
+
+            db('projects')
+                .where({ id })
+                .first()
+                .then(project => {
+                    res.status(201).json(project);
+                });
         })
         .catch(error => {
             res.status(500).json(error);
         });
 });
+
+
+// create Tasks
+server.post('/api/tasks', (req, res) => {
+    db('tasks').insert(req.body)
+        .then(ids => {
+            const id = ids[0];
+
+            db('tasks')
+                .where({ id })
+                .first()
+                .then(task => {
+                    res.status(201).json(task);
+                });
+        })
+        .catch(error => {
+            res.status(500).json(error);
+        });
+});
+
+
 
 module.exports = server;
