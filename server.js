@@ -1,7 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-
+const Tasks = require("./task_helper");
 const db = require('./data/db-config.js');
 
 const server = express();
@@ -41,6 +41,8 @@ server.get('/api/resources', (req, res) => {
         });
 });
 
+
+
 server.get('/api/tasks', (req, res) => {
     // get all tasks from the database
     db('tasks')
@@ -52,6 +54,7 @@ server.get('/api/tasks', (req, res) => {
                     task.completed = true;
                 }
             });
+
             res.status(200).json(tasks);
         })
         .catch(error => {
@@ -59,6 +62,17 @@ server.get('/api/tasks', (req, res) => {
         });
 });
 
+
+server.get("/taskslist/123", (req, res) => {
+    Tasks.list()
+        .then(tasks => {
+            console.log("TASKS", tasks);
+            res.status(200).json(tasks);
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Server could not get task" });
+        });
+});
 
 // create resources
 server.post('/api/resources', (req, res) => {
