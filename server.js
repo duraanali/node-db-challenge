@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const bodyParser = require('body-parser');
 
 const db = require('./data/db-config.js');
 
@@ -7,12 +8,15 @@ const server = express();
 
 server.use(helmet());
 server.use(express.json());
-
+server.use(bodyParser.json());
 
 server.get('/api/projects', (req, res) => {
     // get all projects from the database
+
     db('projects')
+
         .then(projects => {
+
             res.status(200).json(projects);
         })
         .catch(error => {
@@ -32,7 +36,7 @@ server.get('/api/resources', (req, res) => {
 });
 
 server.get('/api/tasks', (req, res) => {
-    // get all projects from the database
+    // get all tasks from the database
     db('tasks')
         .then(tasks => {
             res.status(200).json(tasks);
