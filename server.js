@@ -16,7 +16,13 @@ server.get('/api/projects', (req, res) => {
     db('projects')
 
         .then(projects => {
-
+            projects.map(project => {
+                if (project.completed === 0) {
+                    project.completed = false;
+                } else {
+                    project.completed = true;
+                }
+            });
             res.status(200).json(projects);
         })
         .catch(error => {
@@ -39,6 +45,13 @@ server.get('/api/tasks', (req, res) => {
     // get all tasks from the database
     db('tasks')
         .then(tasks => {
+            tasks.map(task => {
+                if (task.completed === 0) {
+                    task.completed = false;
+                } else {
+                    task.completed = true;
+                }
+            });
             res.status(200).json(tasks);
         })
         .catch(error => {
